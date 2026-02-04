@@ -29,6 +29,30 @@ async function updateMessage(channel_id, ts, text) {
   return response.json();
 }
 
+async function getThreadReplies(channel_id, thread_ts) {
+  const params = new URLSearchParams({
+    channel: channel_id,
+    ts: thread_ts,
+  });
+  const response = await fetch(
+    `https://slack.com/api/conversations.replies?${params}`,
+    { headers }
+  );
+  return response.json();
+}
+
+async function getChannelHistory(channel_id, limit = 10) {
+  const params = new URLSearchParams({
+    channel: channel_id,
+    limit: limit.toString(),
+  });
+  const response = await fetch(
+    `https://slack.com/api/conversations.history?${params}`,
+    { headers }
+  );
+  return response.json();
+}
+
 // Tool definitions
 const tools = [
   {
@@ -71,6 +95,43 @@ const tools = [
       required: ["channel_id", "ts", "text"],
     },
   },
+  {
+    name: "slack_get_thread_replies",
+    description: "Get all replies to a message thread. Use this to check if someone replied to a message you posted.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        channel_id: {
+          type: "string",
+          description: "The ID of the channel containing the thread",
+        },
+        thread_ts: {
+          type: "string",
+          description: "The timestamp of the parent message (the message you want to check replies for)",
+        },
+      },
+      required: ["channel_id", "thread_ts"],
+    },
+  },
+  {
+    name: "slack_get_channel_history",
+    description: "Get recent messages from a channel. Use this to see recent activity or find messages.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        channel_id: {
+          type: "string",
+          description: "The ID of the channel",
+        },
+        limit: {
+          type: "number",
+          description: "Number of messages to retrieve (default 10, max 100)",
+          default: 10,
+        },
+      },
+      required: ["channel_id"],
+    },
+  },
 ];
 
 // Tool handlers
@@ -89,6 +150,20 @@ async function handleToolCall(name, args) {
         throw new Error("Missing required arguments: channel_id, ts, and text");
       }
       return await updateMessage(channel_id, ts, text);
+    }
+    case "slack_get_thread_replies": {
+      const { channel_id, thread_ts } = args;
+      if (!channel_id || !thread_ts) {
+        throw new Error("Missing required arguments: channel_id and thread_ts");
+      }
+      return await getThreadReplies(channel_id, thread_ts);
+    }
+    case "slack_get_channel_history": {
+      const { channel_id, limit } = args;
+      if (!channel_id) {
+        throw new Error("Missing required argument: channel_id");
+      }
+      return await getChannelHistory(channel_id, limit || 10);
     }
     default:
       throw new Error(`Unknown tool: ${name}`);

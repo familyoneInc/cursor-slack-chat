@@ -5,7 +5,9 @@ Chat with your team on Slack directly from Cursor. Message team members and chan
 ## Features
 
 - `slack_delete_message` - Delete messages from channels or DMs
-- `slack_update_message` - Edit existing messages
+- `slack_update_message` - Edit existing messages  
+- `slack_get_thread_replies` - Check if someone replied to your message
+- `slack_get_channel_history` - See recent messages in a channel
 
 ## Quick Install
 
@@ -40,10 +42,26 @@ Add to your `~/.cursor/mcp.json`:
 
 Then restart Cursor.
 
+## Team Setup
+
+**The team shares ONE Slack bot.** Each person:
+1. Runs the install script
+2. Uses the same shared `SLACK_BOT_TOKEN` in their config
+3. Restarts Cursor
+
 ## Required Slack Bot Permissions
 
 Your Slack bot token needs these OAuth scopes:
-- `chat:write` - Post and delete messages
+
+| Scope | Purpose |
+|-------|---------|
+| `chat:write` | Post, edit, and delete messages |
+| `channels:history` | Read messages in public channels |
+| `groups:history` | Read messages in private channels |
+| `im:history` | Read direct messages |
+| `channels:read` | List public channels |
+| `groups:read` | List private channels the bot is in |
+| `users:read` | Look up user info |
 
 ## Usage
 
