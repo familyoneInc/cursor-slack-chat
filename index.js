@@ -102,7 +102,7 @@ async function main() {
   }
 
   const server = new Server(
-    { name: "MCP Server Slack Extended", version: "1.0.0" },
+    { name: "Cursor Slack Chat", version: "1.0.0" },
     { capabilities: { tools: {} } }
   );
 

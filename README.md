@@ -1,28 +1,23 @@
-# MCP Server Slack Extended
+# Cursor Slack Chat
 
-Extended MCP (Model Context Protocol) server for Slack, adding tools not available in the standard `@modelcontextprotocol/server-slack` package.
-
-This enables **Cursor → Slack** communication, allowing you to message team members and channels directly from Cursor as things come up during development.
+Chat with your team on Slack directly from Cursor. Message team members and channels as things come up during development.
 
 ## Features
 
-**Additional Tools:**
 - `slack_delete_message` - Delete messages from channels or DMs
-
-*More tools coming soon: edit messages, schedule messages, etc.*
+- `slack_update_message` - Edit existing messages
 
 ## Quick Install
 
 ```bash
-# Clone and install
-git clone https://github.com/familyoneInc/mcp-server-slack-extended.git ~/.cursor/mcp-servers/mcp-server-slack-extended
-cd ~/.cursor/mcp-servers/mcp-server-slack-extended
-npm install
+curl -sL https://raw.githubusercontent.com/familyoneInc/cursor-slack-chat/main/setup.sh | bash
 ```
 
-Or run the setup script:
+Or manually:
 ```bash
-curl -sL https://raw.githubusercontent.com/familyoneInc/mcp-server-slack-extended/main/setup.sh | bash
+git clone https://github.com/familyoneInc/cursor-slack-chat.git ~/.cursor/mcp-servers/cursor-slack-chat
+cd ~/.cursor/mcp-servers/cursor-slack-chat
+npm install
 ```
 
 ## Configuration
@@ -32,9 +27,9 @@ Add to your `~/.cursor/mcp.json`:
 ```json
 {
   "mcpServers": {
-    "slack-extended": {
+    "cursor-slack-chat": {
       "command": "node",
-      "args": ["/Users/YOURNAME/.cursor/mcp-servers/mcp-server-slack-extended/index.js"],
+      "args": ["/Users/YOURNAME/.cursor/mcp-servers/cursor-slack-chat/index.js"],
       "env": {
         "SLACK_BOT_TOKEN": "xoxb-your-bot-token"
       }

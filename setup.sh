@@ -1,15 +1,15 @@
 #!/bin/bash
-# MCP Server Slack Extended - Setup Script
-# Enables Cursor → Slack communication
+# Cursor Slack Chat - Setup Script
+# Chat with your team on Slack directly from Cursor
 #
 # Usage:
-#   curl -sL https://raw.githubusercontent.com/familyoneInc/mcp-server-slack-extended/main/setup.sh | bash
+#   curl -sL https://raw.githubusercontent.com/familyoneInc/cursor-slack-chat/main/setup.sh | bash
 
 set -e
 
-INSTALL_DIR="$HOME/.cursor/mcp-servers/mcp-server-slack-extended"
+INSTALL_DIR="$HOME/.cursor/mcp-servers/cursor-slack-chat"
 
-echo "🚀 Installing MCP Server Slack Extended..."
+echo "🚀 Installing Cursor Slack Chat..."
 echo ""
 
 # Clone or update
@@ -20,7 +20,7 @@ if [ -d "$INSTALL_DIR" ]; then
 else
   echo "📦 Cloning repository..."
   mkdir -p "$(dirname "$INSTALL_DIR")"
-  git clone https://github.com/familyoneInc/mcp-server-slack-extended.git "$INSTALL_DIR"
+  git clone https://github.com/familyoneInc/cursor-slack-chat.git "$INSTALL_DIR"
   cd "$INSTALL_DIR"
 fi
 
@@ -35,7 +35,7 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "Next step: Add this to your ~/.cursor/mcp.json"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
-echo "  \"slack-extended\": {"
+echo "  \"cursor-slack-chat\": {"
 echo "    \"command\": \"node\","
 echo "    \"args\": [\"$INSTALL_DIR/index.js\"],"
 echo "    \"env\": {"
