@@ -1,0 +1,29 @@
+{
+  "name": "mcp-server-slack-extended",
+  "version": "1.0.0",
+  "description": "Extended MCP server for Slack - enables Cursor to Slack communication",
+  "main": "index.js",
+  "type": "commonjs",
+  "bin": {
+    "mcp-server-slack-extended": "index.js"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "slack",
+    "cursor",
+    "ai"
+  ],
+  "author": "Family One Inc",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/familyoneInc/mcp-server-slack-extended.git"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.1"
+  }
+}
