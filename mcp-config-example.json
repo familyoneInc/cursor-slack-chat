@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "cursor-slack-chat": {
+      "command": "node",
+      "args": ["/Users/YOURNAME/.cursor/mcp-servers/cursor-slack-chat/index.js"],
+      "env": {
+        "SLACK_BOT_TOKEN": "xoxb-your-bot-token-here"
+      }
+    }
+  }
+}
