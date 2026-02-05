@@ -55,17 +55,26 @@ Then restart Cursor.
 
 Your Slack bot token needs these OAuth scopes:
 
+### Required (Core functionality)
 | Scope | Purpose |
 |-------|---------|
 | `chat:write` | Post, edit, and delete messages |
-| `channels:history` | Read messages in public channels |
 | `channels:read` | List public channels |
+| `channels:history` | Read messages in public channels |
+| `groups:read` | **List private channels** the bot is a member of |
 | `groups:history` | Read messages in private channels |
-| `groups:read` | List private channels the bot is in |
-| `im:history` | Read direct messages |
+| `users:read` | Look up user info (for @mentions) |
+
+### Optional (Enhanced features)
+| Scope | Purpose |
+|-------|---------|
+| `reactions:write` | Add emoji reactions to messages |
 | `im:read` | List DM conversations |
-| `reactions:write` | Add emoji reactions |
-| `users:read` | Look up user info |
+| `im:history` | Read direct messages |
+
+### ⚠️ Important: `groups:read` is REQUIRED for private channels
+
+Without `groups:read`, the `slack_list_all_channels` and `slack_find_channel` tools won't be able to find private channels. The built-in Cursor Slack MCP only lists public channels - our tools fix this, but only if `groups:read` is enabled.
 
 ### Adding scopes
 1. Go to https://api.slack.com/apps
