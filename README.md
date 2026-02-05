@@ -145,28 +145,32 @@ Quit and reopen Cursor to load the new MCP server.
 
 The `SLACK_BOT_TOKEN` is sensitive. **Never commit it to a repo.**
 
-### Option 1: Slack Slash Command (Self-Service)
+### Recommended: Slack Workspace File
 
-Set up a `/cursor-setup` command so team members can get the token themselves:
+Store the token in a file within Slack itself:
 
-1. In your Slack App settings, go to **Slash Commands** → **Create New Command**
-2. Set:
-   - Command: `/cursor-setup`
-   - Request URL: Use a serverless function (AWS Lambda, Cloudflare Worker, etc.)
-   - Description: "Get Cursor Slack Chat setup instructions"
-3. The function should return the token and setup instructions
+1. Create a text file called `cursor-setup.txt` with:
+   ```
+   Cursor Slack Chat - Bot Token
+   
+   Token: xoxb-your-actual-token-here
+   
+   Setup:
+   1. Run: curl -sL https://raw.githubusercontent.com/familyoneInc/cursor-slack-chat/main/setup.sh | bash
+   2. Add the token above to ~/.cursor/mcp.json
+   3. Restart Cursor
+   ```
 
-### Option 2: Password Manager
+2. Upload it to a private channel (like #engineering or #dev-setup)
+3. Pin the file so team members can find it easily
 
-Store in a shared vault (1Password, LastPass, Bitwarden).
+Team members can then access the token directly in Slack when they need it.
 
-### Option 3: Private Documentation
+### Alternative Methods
 
-Add to Confluence, Notion, or internal wiki with restricted access.
-
-### Option 4: Direct Share
-
-Team admin DMs the token to new team members.
+- **Password manager** (1Password, LastPass) - Store in shared team vault
+- **Private wiki** - Document in Confluence/Notion with restricted access
+- **Direct share** - Team lead DMs the token to new members
 
 ---
 
