@@ -59,11 +59,13 @@ SETUP STEPS:
 3. When asked for the token, paste:
    $BOT_TOKEN
 
-4. Restart Cursor
+4. The script will automatically configure Cursor for you
+
+5. Restart Cursor
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Questions? DM the Cursor bot in Slack or ask your team admin.
+Questions? Type /cursor-setup in Slack or ask your team admin.
 EOF
 
   echo ""
@@ -73,12 +75,12 @@ EOF
   echo "NEXT STEP: Upload to Slack"
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   echo ""
-  echo "1. In Slack, click 'More' → 'Files' (or go to Files in sidebar)"
+  echo "1. In Slack, click 'More' → 'Files'"
   echo "2. Click '+ New' → upload cursor-setup.txt from your Desktop"
   echo "3. Team members can find it by searching 'cursor-setup' in Files"
+  echo "   or by typing /cursor-setup"
   echo ""
   
-  # Also set up for the admin
   BOT_TOKEN_FOR_CONFIG="$BOT_TOKEN"
   
 else
@@ -88,8 +90,8 @@ else
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   echo ""
   echo "Get the token from Slack:"
-  echo "  → Click 'More' → 'Files' → Search 'cursor-setup'"
-  echo "  → Or DM the Cursor bot for instructions"
+  echo "  → Type /cursor-setup in any channel"
+  echo "  → Or click 'More' → 'Files' → Search 'cursor-setup'"
   echo ""
   echo "Enter your Slack Bot Token (xoxb-...):"
   read -r BOT_TOKEN_FOR_CONFIG
@@ -110,8 +112,14 @@ fi
 # Install dependencies
 npm install --silent 2>/dev/null
 
-# Update or create mcp.json
-CONFIG_ENTRY=$(cat << EOF
+echo "✅ MCP server installed"
+
+# Update mcp.json
+echo ""
+echo "📝 Configuring Cursor..."
+
+# Create the new server config
+NEW_SERVER_CONFIG=$(cat << EOF
     "cursor-slack-chat": {
       "command": "node",
       "args": ["$INSTALL_DIR/index.js"],
@@ -122,16 +130,84 @@ CONFIG_ENTRY=$(cat << EOF
 EOF
 )
 
-echo ""
-echo "✅ Installation complete!"
+if [ -f "$MCP_CONFIG" ]; then
+  # File exists - check if cursor-slack-chat is already configured
+  if grep -q "cursor-slack-chat" "$MCP_CONFIG"; then
+    echo "⚠️  cursor-slack-chat already exists in mcp.json"
+    echo "   Updating token..."
+    
+    # Use Python to update the JSON (more reliable than sed for JSON)
+    python3 << PYTHON_SCRIPT
+import json
+
+with open("$MCP_CONFIG", "r") as f:
+    config = json.load(f)
+
+if "mcpServers" not in config:
+    config["mcpServers"] = {}
+
+config["mcpServers"]["cursor-slack-chat"] = {
+    "command": "node",
+    "args": ["$INSTALL_DIR/index.js"],
+    "env": {
+        "SLACK_BOT_TOKEN": "$BOT_TOKEN_FOR_CONFIG"
+    }
+}
+
+with open("$MCP_CONFIG", "w") as f:
+    json.dump(config, f, indent=2)
+
+print("✅ Updated mcp.json")
+PYTHON_SCRIPT
+
+  else
+    # File exists but cursor-slack-chat not in it - add it
+    python3 << PYTHON_SCRIPT
+import json
+
+with open("$MCP_CONFIG", "r") as f:
+    config = json.load(f)
+
+if "mcpServers" not in config:
+    config["mcpServers"] = {}
+
+config["mcpServers"]["cursor-slack-chat"] = {
+    "command": "node",
+    "args": ["$INSTALL_DIR/index.js"],
+    "env": {
+        "SLACK_BOT_TOKEN": "$BOT_TOKEN_FOR_CONFIG"
+    }
+}
+
+with open("$MCP_CONFIG", "w") as f:
+    json.dump(config, f, indent=2)
+
+print("✅ Added cursor-slack-chat to mcp.json")
+PYTHON_SCRIPT
+
+  fi
+else
+  # File doesn't exist - create it
+  cat > "$MCP_CONFIG" << EOF
+{
+  "mcpServers": {
+    "cursor-slack-chat": {
+      "command": "node",
+      "args": ["$INSTALL_DIR/index.js"],
+      "env": {
+        "SLACK_BOT_TOKEN": "$BOT_TOKEN_FOR_CONFIG"
+      }
+    }
+  }
+}
+EOF
+  echo "✅ Created mcp.json"
+fi
+
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "Add this to ~/.cursor/mcp.json inside \"mcpServers\": { }"
+echo "✅ SETUP COMPLETE!"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
-echo "$CONFIG_ENTRY"
-echo ""
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "🔄 Restart Cursor to activate"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "🔄 Restart Cursor to activate the Slack integration"
 echo ""
